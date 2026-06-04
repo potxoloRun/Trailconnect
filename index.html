@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trailconnect - Mapa</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="estilos_comunes.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-logo">
+            <img src="/Users/potxo/Desktop/FP/PI/WEB/Imágenes/logo_header.png" alt="Trailconnect Logo">
+        </div>
+        <div class="header-title">
+            <h1>TRAILCONNECT</h1>
+        </div>
+    </header>
+
+    <main class="main-container">
+
+        <nav class="sidebar-menu">
+            <ul>
+                <li><a href="usuario_css.html">Usuario</a></li>
+                <li><a href="index.html">Ruta</a></li>
+                <li><a href="SOS_css.html">SOS</a></li>
+                <li><a href="info_css.html">Info Técnica</a></li>
+                <li><a href="#">Gestión ruta</a></li>
+                <li><a href="#">Puntuación</a></li>
+                <li><a href="#">Tiempo</a></li>
+                <li class="logout"><a href="login.html">Salir</a></li>
+            </ul>
+        </nav>
+
+        <section class="map-area">
+            <div id="map"></div>
+        </section>
+
+        <aside class="right-bar">
+            <div class="logo-item dark"><img src="/Users/potxo/Desktop/FP/PI/WEB/CSS/imagenes/logo_dark.png" alt="Logo">
+            </div>
+            <div class="logo-item light"><img src="/Users/potxo/Desktop/FP/PI/WEB/CSS/Imagenes/logo_light.png" alt="Logo">
+            </div>
+            <div class="logo-item dark"><img src="/Users/potxo/Desktop/FP/PI/WEB/CSS/imagenes/logo_dark.png" alt="Logo">
+            </div>
+            <div class="logo-item light"><img src="/Users/potxo/Desktop/FP/PI/WEB/CSS/imagenes/logo_light.png" alt="Logo">
+            </div>
+            <div class="logo-item dark"><img src="/Users/potxo/Desktop/FP/PI/WEB/CSS/imagenes/logo_dark.png" alt="Logo">
+            </div>
+            <div class="logo-item light"><img src="/Users/potxo/Desktop/FP/PI/WEB/CSS/imagenes/logo_light.png" alt="Logo">
+            </div>
+            <div class="logo-item dark"><img src="/Users/potxo/Desktop/FP/PI/WEB/CSS/imagenes/logo_dark.png" alt="Logo">
+            </div>
+            <div class="logo-item light"><img src="/Users/potxo/Desktop/FP/PI/WEB/CSS/imagenes/logo_light.png" alt="Logo">
+            </div>
+        </aside>
+
+    </main>
+    <script>
+        // 1. Iniciar mapa (Coordenadas: [Latitud, Longitud], Zoom: 12)
+        // He puesto las coordenadas del Lago de Sanabria como ejemplo
+        var map = L.map('map').setView([42.1245, -6.7056], 12);
+
+        // 2. Cargar el dibujo del mapa (OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trailconnect - Usuario</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="estilos_comunes.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-logo">
+            <img src="Imagenes/logo_header.png" alt="Logo">
+        </div>
+        <div class="header-title">
+            <h1>TRAILCONNECT</h1>
+        </div>
+    </header>
+
+    <main class="main-container">
+
+        <!-- Navegación enlazada -->
+        <nav class="sidebar-menu">
+            <ul>
+                <li class="active"><a href="usuario_css.html">Usuario</a></li>
+                <li><a href="index.html">Ruta</a></li>
+                <li><a href="info_css.html">Info Técnica</a></li>
+                <li><a href="SOS_css.html">SOS</a></li>
+                <li><a href="#">Gestión ruta</a></li>
+                <li><a href="#">Puntuación</a></li>
+                <li><a href="#">Tiempo</a></li>
+                <li class="logout"><a href="login.html">Salir</a></li>
+            </ul>
+        </nav>
+
+        <!-- Área de contenido específico de USUARIO -->
+        <section class="content-area">
+            <div class="profile-card">
+                <h2>Perfil de Usuario</h2>
+                <hr class="divider">
+                
+                <form action="#" method="POST">
+                    <div class="form-group">
+                        <label for="nombre">Contacto de emergencia:</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Introduce su nombre">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" placeholder="correo@ejemplo.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Teléfono:</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="Ej: 600 123 456">
+                    </div>
+                    
+                    <button type="button" class="btn-save">GUARDAR DATOS</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Barra lateral derecha de logos -->
+        <aside class="right-bar">
+            <div class="logo-item dark"><img src="imagenes/logo_dark.png" alt="Logo"></div>
+            <div class="logo-item light"><img src="imagenes/logo_light.png" alt="Logo"></div>
+            <div class="logo-item dark"><img src="Imagenes/logo_dark.png" alt="Logo"></div>
+            <div class="logo-item light"><img src="Imagenes/logo_light.png" alt="Logo"></div>
+            <div class="logo-item dark"><img src="Imagenes/logo_dark.png" alt="Logo"></div>
+            <div class="logo-item light"><img src="Imagenes/logo_light.png" alt="Logo"></div>
+            <div class="logo-item dark"><img src="Imagenes/logo_dark.png" alt="Logo"></div>
+            <div class="logo-item light"><img src="Imagenes/logo_light.png" alt="Logo"></div>
+        </aside>
+
+    </main>
+
+</body>
+</html>

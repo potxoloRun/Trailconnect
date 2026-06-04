@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trailconnect - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="estilos_comunes.css">
+    <style>
+        /* Estilos específicos para centrar el formulario de login */
+        .login-body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
+        }
+        .login-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(164, 217, 52, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-box h2 {
+            font-family: var(--fuente-header);
+            margin-bottom: 30px;
+            color: var(--negro);
+        }
+    </style>
+</head>
+<body class="login-body">
+
+    <div class="login-box">
+        <img src="Imagenes/logo_header.png" alt="Logo" width="80" style="background: black; padding: 10px; border-radius: 50%; margin-bottom: 20px;">
+        <h2>ACCESO</h2>
+        
+        <form id="loginForm">
+            <div class="form-group" style="text-align: left;">
+                <label>Usuario:</label>
+                <input type="text" id="username" placeholder="Tu usuario" required>
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label>Contraseña:</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <p id="errorMessage" style="color: red; font-size: 0.8rem; margin-bottom: 15px; display: none;">Usuario o contraseña incorrectos</p>
+            <button type="submit" class="btn-save" style="width: 100%;">ENTRAR AL SISTEMA</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que el formulario se envíe de forma normal
+
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            // Validación de ejemplo (Usuario: admin / Contraseña: 1234)
+            if (user === "admin" && pass === "1234") {
+                window.location.href = "index.html"; // Redirige al mapa principal
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
