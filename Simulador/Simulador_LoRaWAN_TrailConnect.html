@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Enlace LoRaWAN - TrailConnect</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 30px;
+        }
+        h1 {
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        .panel {
+            background-color: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .panel h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: #334155;
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #475569;
+        }
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 1rem;
+        }
+        .val-display {
+            float: right;
+            font-weight: bold;
+            color: #2563eb;
+        }
+        .result-card {
+            background-color: #ffffff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .result-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+            color: #1e293b;
+        }
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0f172a;
+        }
+        .status-ok { color: #16a34a; }
+        .status-warn { color: #ca8a04; }
+        .status-fail { color: #dc2626; }
+        .text-sm { font-size: 0.875rem; color: #64748b; margin-top: 5px;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Simulador de Enlace LoRaWAN y Presupuesto</h1>
+    <p>Ajuste los parámetros físicos e infraestructurales para simular el comportamiento de la red en la Reserva Natural.</p>
+    
+    <div class="grid">
+        <!-- Controles -->
+        <div class="panel">
+            <h2>Parámetros de Configuración</h2>
+            
+            <div class="control-group">
+                <label>Número de Gateways: <span id="val-gateways" class="val-display">2</span></label>
+                <input type="range" id="gateways" min="1" max="4" value="2" step="1">
+            </div>
+            
+            <div class="control-group">
+                <label>Altura del Gateway (metros): <span id="val-height" class="val-display">50</span></label>
+                <input type="range" id="height" min="10" max="200" value="50" step="10">
+            </div>
+
+            <div class="control-group">
+                <label>Spreading Factor (SF): <span id="val-sf" class="val-display">SF10</span></label>
+                <input type="range" id="sf" min="7" max="12" value="10" step="1">
+            </div>
+
+            <div class="control-group">
+                <label>Distancia Nodo-Gateway (km): <span id="val-dist" class="val-display">10</span></label>
+                <input type="range" id="dist" min="1" max="25" value="10" step="1">
+            </div>
+
+            <div class="control-group">
+                <label>Tipo de Terreno / Obstáculos:</label>
+                <select id="terrain">
+                    <option value="0">Línea de Vista Clara (Sin obstáculos)</option>
+                    <option value="10">Bosque Ligero / Colinas suaves</option>
+                    <option value="25" selected>Bosque Denso / Roca Granítica (Garganta)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        <div class="panel">
+            <h2>Panel de Resultados</h2>
+            
+            <div class="result-card">
+                <h3>Viabilidad de la Señal (Margen de Enlace)</h3>
+                <div id="res-signal" class="result-value">Calculando...</div>
+                <div id="res-signal-desc" class="text-sm"></div>
+            </div>
+
+            <div class="result-card">
+                <h3>Ancho de Banda vs Consumo Batería</h3>
+                <div id="res-bw" class="result-value"></div>
+                <div id="res-battery" class="text-sm"></div>
+            </div>
+
+            <div class="result-card">
+                <h3>Estimación de Presupuesto (CAPEX)</h3>
+                <div id="res-budget" class="result-value"></div>
+                <div class="text-sm">Incluye Gateways, Nodos (50 uds), Energía Solar e Instalación.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Variables y constantes
+    const freqMHz = 868;
+    const txPower = 14; // dBm
+    const rxGain = 2; // dBi (Nodo)
+    const txGain = 8; // dBi (Gateway)
+    
+    // Sensibilidad del receptor según SF (Valores aproximados SX1262)
+    const sensitivities = {
+        7: -125, 8: -128, 9: -131, 10: -134, 11: -137, 12: -140
+    };
+
+    // Ancho de banda y batería relativos según SF
+    const performance = {
+        7: { bw: "5.4 kbps (Alta velocidad)", bat: "Consumo Mínimo (Excelente)" },
+        8: { bw: "3.1 kbps", bat: "Consumo Bajo" },
+        9: { bw: "1.7 kbps", bat: "Consumo Moderado" },
+        10: { bw: "0.9 kbps", bat: "Consumo Medio-Alto" },
+        11: { bw: "0.5 kbps (Velocidad muy baja)", bat: "Consumo Alto (Deep Sleep crítico)" },
+        12: { bw: "0.2 kbps (Solo alertas críticas)", bat: "Consumo Máximo (Impacto severo)" }
+    };
+
+    // Referencias al DOM
+    const inputs = ['gateways', 'height', 'sf', 'dist', 'terrain'];
+    const ui = {};
+    inputs.forEach(id => {
+        ui[id] = document.getElementById(id);
+        if(id !== 'terrain') ui['val_' + id] = document.getElementById('val-' + id);
+    });
+
+    function calculate() {
+        // Obtener valores
+        const gw = parseInt(ui.gateways.value);
+        const h = parseInt(ui.height.value);
+        const sf = parseInt(ui.sf.value);
+        const d = parseFloat(ui.dist.value);
+        const tLoss = parseFloat(ui.terrain.value);
+
+        // Actualizar etiquetas visuales
+        ui.val_gateways.innerText = gw;
+        ui.val_height.innerText = h;
+        ui.val_sf.innerText = 'SF' + sf;
+        ui.val_dist.innerText = d;
+
+        // 1. Cálculo de Señal (FSPL + Margen)
+        // FSPL = 20log10(d) + 20log10(f) + 32.44
+        const fspl = (20 * Math.log10(d)) + (20 * Math.log10(freqMHz)) + 32.44;
+        
+        // Bonificación por altura (simplificación: -0.1 dB por metro por encima de 10m)
+        const heightBonus = Math.max(0, (h - 10) * 0.1); 
+        
+        // Pérdida total del trayecto
+        const pathLoss = fspl + tLoss - heightBonus;
+        
+        // Potencia recibida
+        const rxPower = txPower + txGain + rxGain - pathLoss;
+        
+        // Margen de enlace
+        const sensitivity = sensitivities[sf];
+        const linkMargin = rxPower - sensitivity;
+
+        const resSignal = document.getElementById('res-signal');
+        const resSignalDesc = document.getElementById('res-signal-desc');
+        
+        if (linkMargin > 10) {
+            resSignal.innerHTML = `<span class="status-ok">${linkMargin.toFixed(1)} dB (Excelente)</span>`;
+            resSignalDesc.innerText = "La señal es robusta. Conexión altamente fiable.";
+        } else if (linkMargin > 0) {
+            resSignal.innerHTML = `<span class="status-warn">${linkMargin.toFixed(1)} dB (Justa)</span>`;
+            resSignalDesc.innerText = "Conexión viable pero vulnerable a cambios climáticos.";
+        } else {
+            resSignal.innerHTML = `<span class="status-fail">${linkMargin.toFixed(1)} dB (Pérdida)</span>`;
+            resSignalDesc.innerText = "La señal no llegará al Gateway. Aumente la altura, el SF, o reduzca la distancia.";
+        }
+
+        // 2. Ancho de banda y Batería
+        document.getElementById('res-bw').innerText = performance[sf].bw;
+        document.getElementById('res-battery').innerText = performance[sf].bat;
+
+        // 3. Presupuesto (CAPEX)
+        // Gateway + Antena + Solar = 1000€ aprox unidad
+        // Nodos = 50 uds * 45€ = 2250€
+        // Instalación base = 1200€
+        const costGW = gw * 1000;
+        const costNodes = 2250;
+        const costInst = 1200 + (gw * 150); // Incremento de instalación por gateway
+        const total = costGW + costNodes + costInst;
+
+        document.getElementById('res-budget').innerText = total.toLocaleString('es-ES') + " €";
+    }
+
+    // Escuchar eventos
+    inputs.forEach(id => {
+        ui[id].addEventListener('input', calculate);
+    });
+
+    // Calcular al iniciar
+    calculate();
+</script>
+</body>
+</html>
